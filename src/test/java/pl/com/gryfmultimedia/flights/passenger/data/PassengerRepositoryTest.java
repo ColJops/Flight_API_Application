@@ -4,7 +4,6 @@ package pl.com.gryfmultimedia.flights.passenger.data;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,7 +20,7 @@ class PassengerRepositoryTest {
     void shouldPersistPassenger() {
         //given
         UUID id = UUID.randomUUID();
-        Passenger unsavePassenger = new Passenger(id, "Elton", "John", "elton@john.uk");
+        Passenger unsavePassenger = new Passenger(id,"Elton", "John", "elton@john.uk");
         //when
         Passenger savedPassenger = passengerRepository.save(unsavePassenger);
         //when
@@ -32,7 +31,7 @@ class PassengerRepositoryTest {
     void shouldFindPassengerById() {
         //given
         UUID id = UUID.randomUUID();
-        Passenger passengerId = new Passenger(id, "Michael", "Jackson", "michael@jackson.uk");
+        Passenger passengerId = new Passenger(id,"Michael", "Jackson", "michael@jackson.uk");
         passengerRepository.save(passengerId);
         //when
         Optional<Passenger> foundPassenger = passengerRepository.findById(passengerId.getId());
@@ -45,7 +44,7 @@ class PassengerRepositoryTest {
     @Test
     void shouldFindPassengerByEmail() {
         UUID id = UUID.randomUUID();
-        Passenger passenger = new Passenger(id, "Brian", "Adams", "brian@adams.com");
+        Passenger passenger = new Passenger(id,"Brian", "Adams", "brian@adams.com");
         passengerRepository.save(passenger);
         //when
         Optional<Passenger> foundPassenger = passengerRepository.findPassengerByEmail(passenger.getEmail());
