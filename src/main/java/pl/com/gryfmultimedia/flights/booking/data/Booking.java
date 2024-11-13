@@ -11,6 +11,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static java.time.LocalDateTime.now;
+
 @Entity
 @NoArgsConstructor
 @Setter
@@ -22,7 +24,7 @@ public class Booking {
     @GeneratedValue
     @Column(name = "id")
     private UUID id;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "flight", referencedColumnName = "id")
     private Flight flight;
     @ManyToOne
@@ -47,6 +49,10 @@ public class Booking {
     }
 
     public static Booking newBooking(Flight flight, Passenger passenger, String seat, BigDecimal price, String currency) {
-      return new Booking(flight, passenger, seat, price, currency, LocalDateTime.now());
+      return new Booking(flight, passenger, seat, price, currency, now());
+    }
+
+    public void changeSeat(String newSeat) {
+        this.seat = newSeat;
     }
 }

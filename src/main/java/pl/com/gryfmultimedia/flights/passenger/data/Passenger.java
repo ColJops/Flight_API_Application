@@ -1,23 +1,21 @@
 package pl.com.gryfmultimedia.flights.passenger.data;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalTime;
 import java.util.UUID;
 
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-@Entity
 @Table(name = "passenger")
 public class Passenger {
 
     @Id
+    @GeneratedValue
     @Column(name = "id")
     private UUID id;
     @Column(name = "first_name")

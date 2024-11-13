@@ -17,10 +17,17 @@ public class FlightDiscoveryService {
     private final FlightRepository flightRepository;
 
     public List<Flight> search(FlightDiscoveryQuery request) {
-        return null;
+        return switch (request) {
+            case FlightDiscoveryQuery.forOriginAndDestinationDepartureDate rq->
+                flightRepository.findFlight(rq.origin(), rq.destination(), rq.departureDate());
+            case FlightDiscoveryQuery.forOriginAndDepartureDate rq->
+                flightRepository.findFlight(rq.origin(), rq.departureDate());
+            case FlightDiscoveryQuery.forOriginDestination rq ->
+                flightRepository.findFlight(rq.origin(), rq.destination());
+        };
     }
 
     public Optional<Flight> getByFlightNumber(String flightNumber) {
-        return Optional.empty();
+        return flightRepository.findFlightByNumber(flightNumber);
     }
 }

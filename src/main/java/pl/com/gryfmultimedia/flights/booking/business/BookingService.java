@@ -7,8 +7,8 @@ import pl.com.gryfmultimedia.flights.booking.data.Booking;
 import pl.com.gryfmultimedia.flights.booking.data.BookingRepository;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -17,19 +17,43 @@ public class BookingService {
 
     private final BookingRepository bookingRepository;
 
-    public Booking save(Booking booking) {
-        return null;
+    private boolean seatIsAlreadyBookedForFlight(UUID flightId, String seat) {
+        return bookingRepository.existsBookingByFlightIdAndSeat(flightId, seat);
     }
 
-    public Booking get(UUID bookingId) {
-        return null;
+    public Booking save(Booking booking) throws BookingException {
+        if(Objects.isNull(booking.getPassenger())) {
+            throw new BookingException("Passenger not found");
+        }
+        if(Objects.isNull(booking.getFlight())) {
+            throw new BookingException("Flight not found");
+        }
+        if(seatIsAlreadyBookedForFlight(booking.getFlight().getId(), booking.getSeat())) {
+            throw new BookingException("Seat not available");
+        }
+        return bookingRepository.save(booking);
     }
 
-    public Collection<Booking> geByPassengerEmail(String passengerEmail) {
-        return List.of();
+    public Booking get(UUID bookingId) throws BookingException {
+        return bookingRepository.findById(bookingId).orElseThrow(()-> new BookingException("Booking not found"));
     }
 
-    public Booking changeSeat(UUID bookingId, String newSeat) { return null; }
+    public Collection<Booking> getByPassengerEmail(String passengerEmail) {
+        return bookingRepository.findBookingByPassengerEmail(passengerEmail);
+    }
 
-    public void cancel(UUID bookingId) {}
+    public Booking changeSeat(UUID bookingId, String newSeat) throws BookingException {
+        var booking = get(bookingId);
+        if (seatIsAlreadyBookedForFlight(booking.getFlight().getId(), newSeat)) {
+            throw new BookingException("Seat not avaible");
+        }
+        booking.changeSeat(newSeat);
+        return booking;
+    }
+
+    public void cancel(UUID bookingId) throws BookingException {
+        var booking = get(bookingId);
+        bookingRepository.delete(booking);
+    }
+
 }

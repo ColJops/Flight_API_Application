@@ -11,9 +11,10 @@ import pl.com.gryfmultimedia.flights.passenger.business.PassengerService;
 import pl.com.gryfmultimedia.flights.passenger.data.Passenger;
 
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
+import java.math.BigDecimal;
+
+import static java.time.LocalDateTime.now;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,15 +35,18 @@ class BookingServiceTest {
 
     @BeforeEach
     void setUp() {
+        //Test nie przechodzi, jeśli obiekt flight jest zadeklarowany w setUp() - przyczyną może być @ManyToOna -> sprawdzić!
+        //var flight = new Flight(randomAlphanumeric(6), randomAlphabetic(3), randomAlphanumeric(3), now(), now().plusHours(5));
         var passenger = new Passenger(randomAlphabetic(10), randomAlphabetic(10), randomAlphanumeric(15));
-        var flight = new Flight(randomAlphanumeric(6), randomAlphabetic(3), randomAlphanumeric(3), LocalDateTime.now(), LocalDateTime.now().plusHours(5));
         this.flight = flightService.saveFlight(flight);
         this.passenger = passengerService.createPassenger(passenger);
     }
 
     @Test
-    void shouldBookTicket() {
+    void shouldBookTicket() throws BookingException {
         //given
+        var flight = new Flight(randomAlphanumeric(6), randomAlphabetic(3), randomAlphanumeric(3), now(), now().plusHours(5));
+        System.out.println(flight);
         Booking request = newBooking(flight, passenger,"17B", BigDecimal.valueOf(99.99), "USD");
         //when
         Booking result = bookingService.save(request);
@@ -71,8 +75,9 @@ class BookingServiceTest {
     }
 
     @Test
-    void shouldNotBookTicketWhenSeatIsNotAvailable() {
+    void shouldNotBookTicketWhenSeatIsNotAvailable() throws BookingException {
         //given
+        flight = new Flight(randomAlphanumeric(6), randomAlphabetic(3), randomAlphanumeric(3), now(), now().plusHours(5));
         bookingService.save(newBooking(flight, passenger, "17B", BigDecimal.valueOf(99.99), "USD"));
         Booking request = newBooking(flight, passenger, "17B", BigDecimal.valueOf(99.99), "USD");
         //when
@@ -82,8 +87,9 @@ class BookingServiceTest {
     }
 
     @Test
-    void shouldChangeTicket() {
+    void shouldChangeTicket() throws BookingException {
         //given
+        flight = new Flight(randomAlphanumeric(6), randomAlphabetic(3), randomAlphanumeric(3), now(), now().plusHours(5));
         var booking = bookingService
                 .save(newBooking(flight, passenger, "17B", BigDecimal.valueOf(99.99), "USD"));
         //when
@@ -93,8 +99,10 @@ class BookingServiceTest {
     }
 
     @Test
-    void shouldNotChangeTicketWhenSeatIsNotAvailable() {
+    void shouldNotChangeTicketWhenSeatIsNotAvailable() throws BookingException {
         //given
+        flight = new Flight(randomAlphanumeric(6), randomAlphabetic(3), randomAlphanumeric(3), now(), now().plusHours(5));
+
         var bookingForSeat17F = bookingService
                 .save(newBooking(flight, passenger, "17B", BigDecimal.valueOf(69.99), "USD"));
         var bookingForSeat18F = bookingService
