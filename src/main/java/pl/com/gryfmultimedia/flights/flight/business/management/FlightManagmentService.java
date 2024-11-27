@@ -14,7 +14,7 @@ public class FlightManagmentService {
     private final FlightRepository flightRepository;
     
     public Flight saveFlight(Flight flight) {
-        return null;
+        return flight;
     }
     
 }
