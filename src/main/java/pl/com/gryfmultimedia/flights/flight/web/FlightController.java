@@ -25,7 +25,7 @@ class FlightController {
 
     @PostMapping("/management")
     @ResponseStatus(HttpStatus.CREATED)
-    FlightDetails createFlight(FlightCreationRequest request) {
+    FlightDetails createFlight(@RequestBody FlightCreationRequest request) {
         var flight = apiMapping.map(request);
         var savedFlight = managementService.saveFlight(flight);
         return modelMapping.map(savedFlight);
