@@ -15,9 +15,10 @@ import java.util.Optional;
 public class FlightDiscoveryService {
 
     private final FlightRepository flightRepository;
+    private final TicketPriceCalculator ticketPriceCalculator;
 
-    public List<Flight> search(FlightDiscoveryQuery request) {
-        return switch (request) {
+    public List<TicketPriseAwareFlight> search(FlightDiscoveryQuery request) {
+        var matchedFlights = switch (request) {
             case FlightDiscoveryQuery.forOriginAndDestinationDepartureDate rq->
                 flightRepository.findFlight(rq.origin(), rq.destination(), rq.departureDate());
             case FlightDiscoveryQuery.forOriginAndDepartureDate rq->
@@ -25,6 +26,9 @@ public class FlightDiscoveryService {
             case FlightDiscoveryQuery.forOriginDestination rq ->
                 flightRepository.findFlight(rq.origin(), rq.destination());
         };
+        return matchedFlights.stream()
+                .map(flight -> new TicketPriseAwareFlight(flight, ticketPriceCalculator.calculate(flight)))
+                .toList();
     }
 
     public Optional<Flight> getByFlightNumber(String flightNumber) {

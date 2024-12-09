@@ -37,4 +37,7 @@ public class Flight {
         this.departure = departure;
         this.arrival = arrival;
     }
+
+    public boolean doesNotHaventNumber() {return  number == null; }
+    public void assignNumber(String flightNumber) { this.number = flightNumber; }
 }

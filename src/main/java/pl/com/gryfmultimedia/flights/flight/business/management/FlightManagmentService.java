@@ -12,9 +12,14 @@ import pl.com.gryfmultimedia.flights.flight.data.FlightRepository;
 public class FlightManagmentService {
     
     private final FlightRepository flightRepository;
+    private final FlightNumberGenerator flightNumberGenerator;
     
     public Flight saveFlight(Flight flight) {
-        return flight;
+        if (flight.doesNotHaventNumber()) {
+            var flightNumber = flightNumberGenerator.generate();
+            flight.assignNumber(flightNumber);
+        }
+        return flightRepository.save(flight);
     }
     
 }
